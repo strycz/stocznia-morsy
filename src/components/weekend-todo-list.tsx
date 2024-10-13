@@ -21,7 +21,7 @@ type DayTodos = {
 
 const generateWeekendDates = (count: number): Date[] => {
   const weekends: Date[] = []
-  let currentDate = new Date()
+  const currentDate = new Date()
 
   while (weekends.length < count) {
     if (currentDate.getDay() === 0 || currentDate.getDay() === 6) {
