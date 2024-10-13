@@ -38,6 +38,7 @@ const formatDate = (date: Date): string => {
 }
 
 export function WeekendTodoListComponent() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [weekends, setWeekends] = useState<Date[]>(generateWeekendDates(10))
   const [selectedDate, setSelectedDate] = useState<Date>(weekends[0])
   const scrollRef = useRef<HTMLDivElement>(null)
