@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { Dispatch, FC, SetStateAction } from 'react';
 import {
   Datepicker,
   DatepickerEvent,
@@ -7,7 +7,7 @@ import { enUS } from 'date-fns/locale';
 import { useState } from 'react';
 
 interface HorizontalDatePickerProps {
-  setSelectedDate: (date: Date) => void;
+  setSelectedDate: Dispatch<SetStateAction<Date>>;
 }
 
 const HorizontalDatePicker: FC<HorizontalDatePickerProps> = ({

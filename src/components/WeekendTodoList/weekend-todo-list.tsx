@@ -1,11 +1,8 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
 import HorizontalDatePicker from '../ui/datePicker';
 
 type TodoItem = {
@@ -42,7 +39,6 @@ export function WeekendTodoListComponent() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [weekends, setWeekends] = useState<Date[]>(generateWeekendDates(10));
   const [selectedDate, setSelectedDate] = useState<Date>(weekends[0]);
-  const scrollRef = useRef<HTMLDivElement>(null);
 
   const [todos, setTodos] = useState<DayTodos>({});
 
@@ -76,18 +72,6 @@ export function WeekendTodoListComponent() {
     });
     setTodos(dummyTodos);
   }, [weekends]);
-
-  const scrollLeft = () => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: -200, behavior: 'smooth' });
-    }
-  };
-
-  const scrollRight = () => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: 200, behavior: 'smooth' });
-    }
-  };
 
   const toggleTodo = (date: Date, todoId: string) => {
     setTodos((prevTodos) => {
