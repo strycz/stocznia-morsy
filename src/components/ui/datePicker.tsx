@@ -5,7 +5,7 @@ import {
 import { enUS } from 'date-fns/locale';
 import { useState } from 'react';
 
-export default function DatePicker() {
+export default function HorizontalDatePicker() {
   const [date, setDate] = useState<{
     endValue: Date | null;
     startValue: Date | null;
@@ -16,9 +16,14 @@ export default function DatePicker() {
     rangeDates: [],
   });
 
-  const handleChange = (d: DatepickerEvent) => {
-    const [startValue, endValue, rangeDates] = d;
-    setDate((prev) => ({ ...prev, endValue, startValue, rangeDates }));
+  const handleChange = (event: DatepickerEvent) => {
+    const [startValue] = event;
+
+    setDate((prev) => ({
+      ...prev,
+      endValue: startValue,
+      startValue,
+    }));
   };
 
   return (

@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useQuery } from 'convex/react';
 import { api } from '../../convex/_generated/api';
 import { WeekendTodoListComponent } from '@/components/weekend-todo-list';
+import HorizontalDatePicker from '@/components/ui/datePicker';
 
 export default function Home() {
   const tasks = useQuery(api.tasks.get);
@@ -14,7 +15,9 @@ export default function Home() {
       <main className="flex flex-col gap-0 row-start-2 items-center sm:items-start">
         {tasks?.map(({ _id, text }) => <div key={_id}>{text}</div>)}
         <h2 className="text-4xl font-bold mb-4">Stocznia Sauna + Morsowanie</h2>
-
+        <div className="max-w-[800px] w-full">
+          <HorizontalDatePicker />
+        </div>
         <WeekendTodoListComponent />
       </main>
       <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
