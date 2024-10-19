@@ -1,3 +1,4 @@
+import { FC } from 'react';
 import {
   Datepicker,
   DatepickerEvent,
@@ -5,7 +6,13 @@ import {
 import { enUS } from 'date-fns/locale';
 import { useState } from 'react';
 
-export default function HorizontalDatePicker() {
+interface HorizontalDatePickerProps {
+  setSelectedDate: (date: Date) => void;
+}
+
+const HorizontalDatePicker: FC<HorizontalDatePickerProps> = ({
+  setSelectedDate,
+}) => {
   const [date, setDate] = useState<{
     endValue: Date | null;
     startValue: Date | null;
@@ -18,6 +25,8 @@ export default function HorizontalDatePicker() {
 
   const handleChange = (event: DatepickerEvent) => {
     const [startValue] = event;
+
+    setSelectedDate(startValue as Date);
 
     setDate((prev) => ({
       ...prev,
@@ -34,4 +43,6 @@ export default function HorizontalDatePicker() {
       endValue={date.endValue}
     />
   );
-}
+};
+
+export default HorizontalDatePicker;

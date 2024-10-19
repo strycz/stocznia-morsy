@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import HorizontalDatePicker from '../ui/datePicker';
 
 type TodoItem = {
   id: string;
@@ -34,7 +35,7 @@ const generateWeekendDates = (count: number): Date[] => {
 };
 
 const formatDate = (date: Date): string => {
-  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  return date.toLocaleDateString('pl-PL', { month: 'long', day: '2-digit' });
 };
 
 export function WeekendTodoListComponent() {
@@ -100,42 +101,12 @@ export function WeekendTodoListComponent() {
 
   return (
     <div className="max-w-4xl mx-auto mt-8 p-4">
-      <div className="flex items-center mb-6">
-        <Button variant="ghost" onClick={scrollLeft} className="p-2">
-          <ChevronLeft className="h-6 w-6" />
-        </Button>
-        <div
-          ref={scrollRef}
-          className={cn(
-            'flex-1 overflow-x-auto whitespace-nowrap',
-            'scrollbar-none',
-            '[-ms-overflow-style:none]',
-            '[scrollbar-width:none]',
-            '&::-webkit-scrollbar { display: none; }'
-          )}
-        >
-          {weekends.map((date, index) => (
-            <Button
-              key={index}
-              variant={
-                date.toDateString() === selectedDate.toDateString()
-                  ? 'default'
-                  : 'ghost'
-              }
-              className="mx-1"
-              onClick={() => setSelectedDate(date)}
-            >
-              {formatDate(date)}
-            </Button>
-          ))}
-        </div>
-        <Button variant="ghost" onClick={scrollRight} className="p-2">
-          <ChevronRight className="h-6 w-6" />
-        </Button>
+      <div className="max-w-[800px] w-full">
+        <HorizontalDatePicker setSelectedDate={setSelectedDate} />
       </div>
 
       <h2 className="text-2xl font-bold mb-4">
-        Todo List for {formatDate(selectedDate)}
+        Zapisy na dzień {formatDate(selectedDate)}
       </h2>
       <ul className="space-y-4">
         {todos[selectedDate.toISOString()]?.map((item) => (
