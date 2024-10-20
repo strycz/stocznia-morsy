@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Checkbox } from '@/components/ui/checkbox';
 import HorizontalDatePicker from '../ui/datePicker';
+import { useMutation, useQuery } from 'convex/react';
+import { api } from '../../../convex/_generated/api';
 
 type TodoItem = {
   id: string;
@@ -36,7 +38,9 @@ const formatDate = (date: Date): string => {
 };
 
 export function WeekendTodoListComponent() {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const likeMessage = useMutation(api.messages.like);
+  const messages = useQuery(api.messages.list);
+
   const [weekends, setWeekends] = useState<Date[]>(generateWeekendDates(10));
   const [selectedDate, setSelectedDate] = useState<Date>(weekends[0]);
 
@@ -85,6 +89,25 @@ export function WeekendTodoListComponent() {
 
   return (
     <div className="max-w-4xl mx-auto mt-8 p-4">
+      {messages?.map(({ _id, body }) => (
+        <div
+          key={_id}
+          className="bg-white rounded-lg shadow-md p-4 mb-4 flex justify-between items-center"
+        >
+          <p className="flex-grow">BODY{body}</p>
+          <button
+            className="ml-4 text-xl"
+            onClick={async () => {
+              await likeMessage({
+                liker: 'placeholderName',
+                messageId: _id,
+              });
+            }}
+          >
+            🤍
+          </button>
+        </div>
+      ))}
       <div className="max-w-[800px] w-full">
         <HorizontalDatePicker setSelectedDate={setSelectedDate} />
       </div>
