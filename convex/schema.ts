@@ -15,6 +15,6 @@ export default defineSchema({
     name: v.string(),
     hasPaid: v.boolean(),
     dayId: v.id('days'),
-  }).index('byDayId', ['dayId']),
+  }).index('by_day', ['dayId']),
   days: defineTable({ date: v.string() }),
 });

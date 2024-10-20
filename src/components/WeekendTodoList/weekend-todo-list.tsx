@@ -42,12 +42,13 @@ const formatDate = (date: Date): string => {
 
 export function WeekendTodoListComponent() {
   const likeMessage = useMutation(api.messages.like);
-  const createMessage = useMutation(api.messages.send);
-  const messages = useQuery(api.messages.list, {});
+  const addParticipant = useMutation(api.participants.add);
+  const participants = useQuery(api.participants.get, {});
 
   const [weekends, setWeekends] = useState<Date[]>(generateWeekendDates(10));
-  const [selectedDate, setSelectedDate] = useState<Date>(weekends[0]);
+  // const [selectedDate, setSelectedDate] = useState<Date>(weekends[0]);
   const [newMessage, setNewMessage] = useState('');
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
   const [todos, setTodos] = useState<DayTodos>({});
 
@@ -64,31 +65,19 @@ export function WeekendTodoListComponent() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (newMessage.trim()) {
-      await createMessage({ body: newMessage, author: 'User' });
+      await addParticipant({ name: newMessage, dayId: 'User' });
       setNewMessage('');
     }
   };
 
   return (
     <div className="max-w-4xl mx-auto mt-8 p-4">
-      {messages?.map(({ _id, body }) => (
+      {participants?.map(({ _id, name }) => (
         <div
           key={_id}
           className="bg-white rounded-lg shadow-md p-4 mb-4 flex justify-between items-center"
         >
-          <p className="flex-grow">{body}</p>
-          <Button
-            variant="ghost"
-            onClick={async () => {
-              await likeMessage({
-                liker: 'placeholderName',
-                messageId: _id,
-              });
-            }}
-            className="p-2"
-          >
-            <ThumbsUp className="h-6 w-6" />
-          </Button>
+          <p className="flex-grow">{name}</p>
         </div>
       ))}
       <div className="max-w-[800px] w-full">
