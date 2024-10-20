@@ -52,23 +52,12 @@ export function WeekendTodoListComponent() {
   const [newMessage, setNewMessage] = useState('');
   const [selectedDay, setSelectedDay] = useState<Date>(new Date());
   const [selectedDayId, setSelectedDayId] = useState<Id<'days'>>();
-  const [todos, setTodos] = useState<DayTodos>({});
 
   const addParticipant = useMutation(api.participants.add);
   const getOrCreateDay = useMutation(api.days.getOrCreate);
   const participants = useQuery(api.participants.get, {
     byDayId: selectedDayId,
   });
-
-  const toggleTodo = (date: Date, todoId: string) => {
-    setTodos((prevTodos) => {
-      const dateKey = date.toISOString();
-      const updatedTodos = prevTodos[dateKey].map((todo) =>
-        todo.id === todoId ? { ...todo, completed: !todo.completed } : todo
-      );
-      return { ...prevTodos, [dateKey]: updatedTodos };
-    });
-  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -91,18 +80,13 @@ export function WeekendTodoListComponent() {
 
   return (
     <div className="max-w-4xl mx-auto mt-8 p-4">
-      {participants?.map(({ _id, name }) => (
-        <div
-          key={_id}
-          className="bg-white rounded-lg shadow-md p-4 mb-4 flex justify-between items-center"
-        >
-          <p className="flex-grow">{name}</p>
-        </div>
-      ))}
       <div className="max-w-[800px] w-full">
         <HorizontalDatePicker dateSelectedHandler={dateSelectedHandler} />
       </div>
 
+      <h2 className="text-2xl font-bold mb-4">
+        Zapisy na dzień {formatDate(selectedDay)}
+      </h2>
       <form onSubmit={handleSubmit} className="mb-4 flex space-x-2">
         <Input
           type="text"
@@ -118,38 +102,14 @@ export function WeekendTodoListComponent() {
           Zapisz się
         </Button>
       </form>
-
-      <h2 className="text-2xl font-bold mb-4">
-        Zapisy na dzień {formatDate(selectedDay)}
-      </h2>
-      <ul className="space-y-4">
-        {todos[selectedDay.toISOString()]?.map((item) => (
-          <li
-            key={item.id}
-            className="flex items-center space-x-4 bg-card p-4 rounded-lg shadow"
-          >
-            <Avatar className="h-10 w-10">
-              <AvatarImage
-                src={item.avatarUrl}
-                alt={`${item.firstName} ${item.lastName}`}
-              />
-              <AvatarFallback>
-                {item.firstName[0]}
-                {item.lastName[0]}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex-grow">
-              <p className="font-medium">
-                {item.firstName} {item.lastName}
-              </p>
-            </div>
-            <Checkbox
-              checked={item.completed}
-              onCheckedChange={() => toggleTodo(selectedDay, item.id)}
-            />
-          </li>
-        ))}
-      </ul>
+      {participants?.map(({ _id, name }) => (
+        <div
+          key={_id}
+          className="bg-white rounded-lg shadow-md p-4 mb-4 flex justify-between items-center"
+        >
+          <p className="flex-grow">{name}</p>
+        </div>
+      ))}
     </div>
   );
 }
