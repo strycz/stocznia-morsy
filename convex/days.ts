@@ -5,9 +5,6 @@ import { Id } from './_generated/dataModel';
 export const getOrCreate = mutation({
   args: { date: v.string() },
   handler: async (ctx, args) => {
-    // First, try to find an existing day with the given date
-    // return await ctx.db.query('days').first();
-
     const existingDay = await ctx.db
       .query('days')
       .filter((q) => q.eq(q.field('date'), args.date))

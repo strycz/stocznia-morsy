@@ -1,45 +1,12 @@
 'use client';
 
-import { useState, FormEvent, useEffect } from 'react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useState, FormEvent } from 'react';
 import HorizontalDatePicker from '../ui/datePicker';
 import { useMutation, useQuery } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
-import { Checkbox } from '../ui/checkbox';
 import { Id } from '../../../convex/_generated/dataModel';
-
-type TodoItem = {
-  id: string;
-  firstName: string;
-  lastName: string;
-  avatarUrl: string;
-  completed: boolean;
-};
-
-type DayTodos = {
-  [key: string]: TodoItem[];
-};
-
-type IDay = {
-  date: Date;
-  dayId: Id<'days'>;
-};
-
-const generateWeekendDates = (count: number): Date[] => {
-  const weekends: Date[] = [];
-  const currentDate = new Date();
-
-  while (weekends.length < count) {
-    if (currentDate.getDay() === 0 || currentDate.getDay() === 6) {
-      weekends.push(new Date(currentDate));
-    }
-    currentDate.setDate(currentDate.getDate() + 1);
-  }
-
-  return weekends;
-};
 
 const formatDate = (date: Date): string => {
   return date.toLocaleDateString('pl-PL', {
@@ -69,7 +36,8 @@ export function WeekendTodoListComponent() {
 
   const dateSelectedHandler = async (date: Date) => {
     try {
-      const dayId = await getOrCreateDay({ date: date.toISOString() });
+      const formattedDate = date.toISOString().split('T')[0];
+      const dayId = await getOrCreateDay({ date: formattedDate });
       console.log('Day created or retrieved:', dayId);
       setSelectedDay(date);
       setSelectedDayId(dayId);

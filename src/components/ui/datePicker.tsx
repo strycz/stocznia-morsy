@@ -35,6 +35,16 @@ const HorizontalDatePicker: FC<HorizontalDatePickerProps> = ({
     }));
   };
 
+  useEffect(() => {
+    // Trigger onChange event with nearest Saturday from today when component is created
+    const today = new Date();
+    const daysUntilSaturday = (6 - today.getDay() + 7) % 7;
+    const nearestSaturday = new Date(
+      today.setDate(today.getDate() + daysUntilSaturday)
+    );
+    handleChange([nearestSaturday, null, null]);
+  }, []);
+
   return (
     <Datepicker
       onChange={handleChange}
