@@ -2,8 +2,19 @@ import { v } from 'convex/values';
 import { mutation, query } from './_generated/server';
 
 export const list = query({
-  args: {},
-  handler: async (ctx) => {
+  args: {
+    byDate: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    if (args.byDate) {
+      const messages = await ctx.db.query('messages').order('desc').take(100);
+
+      return messages.reverse().map((message) => ({
+        ...message,
+        // Format smileys
+        body: `${message.body} '😊' byDate`,
+      }));
+    }
     // Grab the most recent messages.
     const messages = await ctx.db.query('messages').order('desc').take(100);
     // Reverse the list so that it's in a chronological order.

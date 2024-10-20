@@ -1,13 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Checkbox } from '@/components/ui/checkbox';
 import HorizontalDatePicker from '../ui/datePicker';
 import { useMutation, useQuery } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
 import { Button } from '../ui/button';
-import { ChevronLeft, LucideAArrowUp, ThumbsUp } from 'lucide-react';
+import { ThumbsUp } from 'lucide-react';
+import { Input } from '../ui/input';
+import { Checkbox } from '../ui/checkbox';
 
 type TodoItem = {
   id: string;
@@ -41,43 +42,14 @@ const formatDate = (date: Date): string => {
 
 export function WeekendTodoListComponent() {
   const likeMessage = useMutation(api.messages.like);
-  const messages = useQuery(api.messages.list);
+  const createMessage = useMutation(api.messages.send);
+  const messages = useQuery(api.messages.list, {});
 
   const [weekends, setWeekends] = useState<Date[]>(generateWeekendDates(10));
   const [selectedDate, setSelectedDate] = useState<Date>(weekends[0]);
+  const [newMessage, setNewMessage] = useState('');
 
   const [todos, setTodos] = useState<DayTodos>({});
-
-  useEffect(() => {
-    // Generate some dummy data for each weekend
-    const dummyTodos: DayTodos = {};
-    weekends.forEach((date) => {
-      dummyTodos[date.toISOString()] = [
-        {
-          id: '1',
-          firstName: 'John',
-          lastName: 'Doe',
-          avatarUrl: '/placeholder.svg?height=40&width=40',
-          completed: false,
-        },
-        {
-          id: '2',
-          firstName: 'Jane',
-          lastName: 'Smith',
-          avatarUrl: '/placeholder.svg?height=40&width=40',
-          completed: true,
-        },
-        {
-          id: '3',
-          firstName: 'Bob',
-          lastName: 'Johnson',
-          avatarUrl: '/placeholder.svg?height=40&width=40',
-          completed: false,
-        },
-      ];
-    });
-    setTodos(dummyTodos);
-  }, [weekends]);
 
   const toggleTodo = (date: Date, todoId: string) => {
     setTodos((prevTodos) => {
@@ -87,6 +59,14 @@ export function WeekendTodoListComponent() {
       );
       return { ...prevTodos, [dateKey]: updatedTodos };
     });
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (newMessage.trim()) {
+      await createMessage({ body: newMessage, author: 'User' });
+      setNewMessage('');
+    }
   };
 
   return (
@@ -114,6 +94,22 @@ export function WeekendTodoListComponent() {
       <div className="max-w-[800px] w-full">
         <HorizontalDatePicker setSelectedDate={setSelectedDate} />
       </div>
+
+      <form onSubmit={handleSubmit} className="mb-4 flex space-x-2">
+        <Input
+          type="text"
+          value={newMessage}
+          onChange={(e) => setNewMessage(e.target.value)}
+          placeholder="Type your message..."
+          className="flex-grow"
+        />
+        <Button
+          type="submit"
+          className="bg-blue-500 hover:bg-blue-600 text-white rounded-md"
+        >
+          Submit
+        </Button>
+      </form>
 
       <h2 className="text-2xl font-bold mb-4">
         Zapisy na dzień {formatDate(selectedDate)}
