@@ -10,4 +10,11 @@ export default defineSchema({
     liker: v.string(),
     messageId: v.id('messages'),
   }).index('byMessageId', ['messageId']),
+  participants: defineTable({
+    createdBy: v.optional(v.string()),
+    name: v.string(),
+    hasPaid: v.boolean(),
+    dayId: v.id('days'),
+  }).index('byDayId', ['dayId']),
+  days: defineTable({ date: v.string() }),
 });
