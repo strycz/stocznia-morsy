@@ -6,6 +6,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import HorizontalDatePicker from '../ui/datePicker';
 import { useMutation, useQuery } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
+import { Button } from '../ui/button';
+import { ChevronLeft, LucideAArrowUp, ThumbsUp } from 'lucide-react';
 
 type TodoItem = {
   id: string;
@@ -94,18 +96,19 @@ export function WeekendTodoListComponent() {
           key={_id}
           className="bg-white rounded-lg shadow-md p-4 mb-4 flex justify-between items-center"
         >
-          <p className="flex-grow">BODY{body}</p>
-          <button
-            className="ml-4 text-xl"
+          <p className="flex-grow">{body}</p>
+          <Button
+            variant="ghost"
             onClick={async () => {
               await likeMessage({
                 liker: 'placeholderName',
                 messageId: _id,
               });
             }}
+            className="p-2"
           >
-            🤍
-          </button>
+            <ThumbsUp className="h-6 w-6" />
+          </Button>
         </div>
       ))}
       <div className="max-w-[800px] w-full">
