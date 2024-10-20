@@ -7,11 +7,11 @@ import { enUS } from 'date-fns/locale';
 import { useState } from 'react';
 
 interface HorizontalDatePickerProps {
-  setSelectedDate: Dispatch<SetStateAction<Date>>;
+  dateSelectedHandler: (date: Date) => void;
 }
 
 const HorizontalDatePicker: FC<HorizontalDatePickerProps> = ({
-  setSelectedDate,
+  dateSelectedHandler,
 }) => {
   const [date, setDate] = useState<{
     endValue: Date | null;
@@ -26,7 +26,7 @@ const HorizontalDatePicker: FC<HorizontalDatePickerProps> = ({
   const handleChange = (event: DatepickerEvent) => {
     const [startValue] = event;
 
-    setSelectedDate(startValue as Date);
+    dateSelectedHandler(startValue as Date);
 
     setDate((prev) => ({
       ...prev,

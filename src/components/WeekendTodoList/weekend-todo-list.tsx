@@ -1,14 +1,14 @@
 'use client';
 
-import { useState, useEffect, FormEvent } from 'react';
+import { useState, FormEvent, useEffect } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import HorizontalDatePicker from '../ui/datePicker';
 import { useMutation, useQuery } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
 import { Button } from '../ui/button';
-import { ThumbsUp } from 'lucide-react';
 import { Input } from '../ui/input';
 import { Checkbox } from '../ui/checkbox';
+import { Id } from '../../../convex/_generated/dataModel';
 
 type TodoItem = {
   id: string;
@@ -20,6 +20,11 @@ type TodoItem = {
 
 type DayTodos = {
   [key: string]: TodoItem[];
+};
+
+type IDay = {
+  date: Date;
+  dayId: Id<'days'>;
 };
 
 const generateWeekendDates = (count: number): Date[] => {
@@ -37,20 +42,23 @@ const generateWeekendDates = (count: number): Date[] => {
 };
 
 const formatDate = (date: Date): string => {
-  return date.toLocaleDateString('pl-PL', { month: 'long', day: '2-digit' });
+  return date.toLocaleDateString('pl-PL', {
+    month: 'long',
+    day: '2-digit',
+  });
 };
 
 export function WeekendTodoListComponent() {
-  const likeMessage = useMutation(api.messages.like);
-  const addParticipant = useMutation(api.participants.add);
-  const participants = useQuery(api.participants.get, {});
-
-  const [weekends, setWeekends] = useState<Date[]>(generateWeekendDates(10));
-  // const [selectedDate, setSelectedDate] = useState<Date>(weekends[0]);
   const [newMessage, setNewMessage] = useState('');
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-
+  const [selectedDay, setSelectedDay] = useState<Date>(new Date());
+  const [selectedDayId, setSelectedDayId] = useState<Id<'days'>>();
   const [todos, setTodos] = useState<DayTodos>({});
+
+  const addParticipant = useMutation(api.participants.add);
+  const getOrCreateDay = useMutation(api.days.getOrCreate);
+  const participants = useQuery(api.participants.get, {
+    byDayId: selectedDayId,
+  });
 
   const toggleTodo = (date: Date, todoId: string) => {
     setTodos((prevTodos) => {
@@ -65,8 +73,19 @@ export function WeekendTodoListComponent() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (newMessage.trim()) {
-      await addParticipant({ name: newMessage, dayId: 'User' });
+      await addParticipant({ name: newMessage, dayId: selectedDayId });
       setNewMessage('');
+    }
+  };
+
+  const dateSelectedHandler = async (date: Date) => {
+    try {
+      const dayId = await getOrCreateDay({ date: date.toISOString() });
+      console.log('Day created or retrieved:', dayId);
+      setSelectedDay(date);
+      setSelectedDayId(dayId);
+    } catch (error) {
+      console.error('Error getting or creating day:', error);
     }
   };
 
@@ -81,7 +100,7 @@ export function WeekendTodoListComponent() {
         </div>
       ))}
       <div className="max-w-[800px] w-full">
-        <HorizontalDatePicker setSelectedDate={setSelectedDate} />
+        <HorizontalDatePicker dateSelectedHandler={dateSelectedHandler} />
       </div>
 
       <form onSubmit={handleSubmit} className="mb-4 flex space-x-2">
@@ -101,10 +120,10 @@ export function WeekendTodoListComponent() {
       </form>
 
       <h2 className="text-2xl font-bold mb-4">
-        Zapisy na dzień {formatDate(selectedDate)}
+        Zapisy na dzień {formatDate(selectedDay)}
       </h2>
       <ul className="space-y-4">
-        {todos[selectedDate.toISOString()]?.map((item) => (
+        {todos[selectedDay.toISOString()]?.map((item) => (
           <li
             key={item.id}
             className="flex items-center space-x-4 bg-card p-4 rounded-lg shadow"
@@ -126,7 +145,7 @@ export function WeekendTodoListComponent() {
             </div>
             <Checkbox
               checked={item.completed}
-              onCheckedChange={() => toggleTodo(selectedDate, item.id)}
+              onCheckedChange={() => toggleTodo(selectedDay, item.id)}
             />
           </li>
         ))}

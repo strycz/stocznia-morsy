@@ -4,11 +4,11 @@ import { Id } from './_generated/dataModel';
 
 export const get = query({
   args: {
-    byDateId: v.optional(v.id('days')),
+    byDayId: v.optional(v.id('days')),
   },
   handler: async (ctx, args) => {
-    if (args.byDateId) {
-      const dateId = args.byDateId as Id<'days'>;
+    if (args.byDayId) {
+      const dateId = args.byDayId as Id<'days'>;
       const participants = await ctx.db
         .query('participants')
         .withIndex('by_day', (q) => q.eq('dayId', dateId))
@@ -31,8 +31,9 @@ export const get = query({
 });
 
 export const add = mutation({
-  args: { name: v.string(), dayId: v.id('days') },
+  args: { name: v.string(), dayId: v.optional(v.id('days')) },
   handler: async (ctx, { name, dayId }) => {
+    if (!dayId) return;
     await ctx.db.insert('participants', { name, dayId, hasPaid: false });
   },
 });
