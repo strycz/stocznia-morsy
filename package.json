@@ -12,6 +12,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@auth/core": "0.36.0",
+    "@convex-dev/auth": "^0.0.73",
     "@meinefinsternis/react-horizontal-date-picker": "^1.0.1",
     "@radix-ui/react-avatar": "^1.1.1",
     "@radix-ui/react-checkbox": "^1.1.2",
