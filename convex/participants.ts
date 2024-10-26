@@ -38,6 +38,13 @@ export const add = mutation({
   },
 });
 
+export const deleteParticipant = mutation({
+  args: { id: v.id('participants') },
+  handler: async (ctx, args) => {
+    await ctx.db.delete(args.id);
+  },
+});
+
 export const pay = mutation({
   args: { participantId: v.id('participants') },
   handler: async (ctx, args) => {

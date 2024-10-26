@@ -7,6 +7,7 @@ import { api } from '../../../convex/_generated/api';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Id } from '../../../convex/_generated/dataModel';
+import { TrashIcon } from '@radix-ui/react-icons';
 
 const formatDate = (date: Date): string => {
   return date.toLocaleDateString('pl-PL', {
@@ -21,6 +22,7 @@ export function WeekendTodoListComponent() {
   const [selectedDayId, setSelectedDayId] = useState<Id<'days'>>();
 
   const addParticipant = useMutation(api.participants.add);
+  const deleteParticipant = useMutation(api.participants.deleteParticipant);
   const getOrCreateDay = useMutation(api.days.getOrCreate);
   const participants = useQuery(api.participants.get, {
     byDayId: selectedDayId,
@@ -76,6 +78,12 @@ export function WeekendTodoListComponent() {
           className="bg-white rounded-lg shadow-md p-4 mb-4 flex justify-between items-center"
         >
           <p className="flex-grow">{name}</p>
+          <Button
+            onClick={() => deleteParticipant({ id: _id })}
+            className="bg-red-500 hover:bg-red-600 text-white rounded-md ml-2"
+          >
+            <TrashIcon />
+          </Button>
         </div>
       ))}
     </div>
