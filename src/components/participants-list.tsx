@@ -1,12 +1,12 @@
 'use client';
 
 import { useState, FormEvent } from 'react';
-import HorizontalDatePicker from '../ui/datePicker';
+import HorizontalDatePicker from './ui/datePicker';
 import { useMutation, useQuery } from 'convex/react';
-import { api } from '../../../convex/_generated/api';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { Id } from '../../../convex/_generated/dataModel';
+import { api } from '../../convex/_generated/api';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
+import { Id } from '../../convex/_generated/dataModel';
 import { TrashIcon } from '@radix-ui/react-icons';
 
 const formatDate = (date: Date): string => {
