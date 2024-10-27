@@ -1,8 +1,12 @@
+'use client';
+
 import { useState } from 'react';
 import Link from 'next/link';
 import { Button } from './button';
+import { useRouter } from 'next/navigation';
 
 const Navbar = () => {
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
@@ -33,7 +37,12 @@ const Navbar = () => {
             </div>
           </div>
           <div className="hidden sm:flex sm:items-center">
-            <Button className="bg-blue-500 hover:bg-blue-600 text-white">
+            <Button
+              className="bg-blue-500 hover:bg-blue-600 text-white"
+              onClick={() => {
+                router.push('/login');
+              }}
+            >
               Login
             </Button>
           </div>
@@ -95,7 +104,12 @@ const Navbar = () => {
             >
               Info i Mapa dojazdu
             </Link>
-            <Button className="w-full bg-blue-500 hover:bg-blue-600 text-white mt-4">
+            <Button
+              className="w-full bg-blue-500 hover:bg-blue-600 text-white mt-4"
+              onClick={() => {
+                router.push('/login');
+              }}
+            >
               Login
             </Button>
           </div>
