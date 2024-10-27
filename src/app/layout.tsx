@@ -6,6 +6,7 @@ import { ReactNode } from 'react';
 import Providers from './providers';
 import Navbar from '@/components/ui/navbar';
 import Footer from '@/components/ui/footer';
+import { NavBarComponent } from '@/components/nav-bar-component';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -35,7 +36,7 @@ export default function RootLayout({
       >
         <Providers>
           <ConvexClientProvider>
-            <Navbar />
+            <NavBarComponent />
             {children}
             <Footer />
           </ConvexClientProvider>
