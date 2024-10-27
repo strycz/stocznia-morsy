@@ -14,6 +14,7 @@ import {
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { JSX, SVGProps } from 'react';
 
 export function NavBarComponent() {
   const router = useRouter();
@@ -99,7 +100,7 @@ export function NavBarComponent() {
   );
 }
 
-function MenuIcon(props) {
+function MenuIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
