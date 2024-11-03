@@ -1,3 +1,5 @@
+'use client'
+
 import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
@@ -10,8 +12,12 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { useAuthActions } from "@convex-dev/auth/react"
 
 export function LoginForm() {
+
+  const { signIn } = useAuthActions();
+
   return (
     <Card className="mx-auto max-w-sm">
       <CardHeader>
@@ -43,7 +49,7 @@ export function LoginForm() {
           <Button type="submit" className="w-full">
             Login
           </Button>
-          <Button variant="outline" className="w-full">
+          <Button onClick={() => void signIn("google")} variant="outline" className="w-full">
             Login with Google
           </Button>
         </div>
