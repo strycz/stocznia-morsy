@@ -15,9 +15,18 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { JSX, SVGProps } from 'react';
+import { useConvexAuth } from 'convex/react';
+import { useAuthActions } from '@convex-dev/auth/react';
 
 export function NavBarComponent() {
   const router = useRouter();
+  const { isLoading, isAuthenticated } = useConvexAuth();
+  const { signOut } = useAuthActions();
+
+  const onLoginClick = () => {
+    isAuthenticated ? signOut() : router.push('/login');
+  };
+
   return (
     <header className="flex h-20 w-full shrink-0 items-center px-4 md:px-6">
       <Sheet>
@@ -28,7 +37,7 @@ export function NavBarComponent() {
           </Button>
         </SheetTrigger>
         <SheetContent side="right">
-          <Link href="#" className="mr-6 hidden lg:flex" prefetch={false}>
+          <Link href="/" className="mr-6 hidden lg:flex" prefetch={false}>
             <img
               src="https://centrumstocznia.com/wp-content/uploads/800x800-1.png"
               alt="Logo"
@@ -52,14 +61,20 @@ export function NavBarComponent() {
               <SheetClose>Info i Mapa dojazdu</SheetClose>
             </Link>
             <SheetClose className="w-full">
-              <Button
-                className="bg-blue-500 hover:bg-blue-600 text-white w-full"
-                onClick={() => {
-                  router.push('/login');
-                }}
-              >
-                Login
-              </Button>
+              <div>
+                {isLoading ? (
+                  <div className="flex justify-center w-full py-2">
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500" />
+                  </div>
+                ) : (
+                  <Button
+                    className="bg-blue-500 hover:bg-blue-600 text-white w-full"
+                    onClick={onLoginClick}
+                  >
+                    {isAuthenticated ? 'Logout' : 'Login'}
+                  </Button>
+                )}
+              </div>
             </SheetClose>
           </div>
         </SheetContent>
@@ -87,14 +102,24 @@ export function NavBarComponent() {
         >
           Info i Mapa dojazdu
         </Link>
-        <Button
-          className="bg-blue-500 hover:bg-blue-600 text-white"
-          onClick={() => {
-            router.push('/login');
-          }}
-        >
-          Login
-        </Button>
+
+        <div>
+          {isLoading ? (
+            <Button
+              className="bg-blue-500 hover:bg-blue-600 text-white w-full"
+              disabled
+            >
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white-500" />
+            </Button>
+          ) : (
+            <Button
+              className="bg-blue-500 hover:bg-blue-600 text-white"
+              onClick={onLoginClick}
+            >
+              {isAuthenticated ? 'Logout' : 'Login'}
+            </Button>
+          )}
+        </div>
       </nav>
     </header>
   );
